@@ -1,0 +1,89 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { motion } from "framer-motion";
+
+const agencies = [
+  {
+    name: "HYBE（ハイブ）✨",
+    chance: 10,
+    groups: ["BTS", "SEVENTEEN", "NewJeans", "LE SSERAFIM"]
+  },
+  {
+    name: "JYP ENTERTAINMENT 🎤",
+    chance: 20,
+    groups: ["TWICE", "Stray Kids", "ITZY", "NMIXX"]
+  },
+  {
+    name: "YG ENTERTAINMENT 🔥",
+    chance: 15,
+    groups: ["BLACKPINK", "TREASURE", "BABYMONSTER"]
+  },
+  {
+    name: "SM ENTERTAINMENT 💎",
+    chance: 20,
+    groups: ["NCT", "aespa", "EXO", "Red Velvet"]
+  },
+  {
+    name: "WAKEONE（ウェイクワン）🌟",
+    chance: 15,
+    groups: ["ZEROBASEONE", "Kep1er"]
+  },
+  {
+    name: "LAPONE ENTERTAINMENT 🇯🇵",
+    chance: 20,
+    groups: ["JO1", "INI"]
+  }
+];
+
+function weightedRandom() {
+  const total = agencies.reduce((sum, a) => sum + a.chance, 0);
+  let rand = Math.random() * total;
+
+  for (let agency of agencies) {
+    if (rand < agency.chance) return agency;
+    rand -= agency.chance;
+  }
+}
+
+export default function KpopAgencyGacha() {
+  const [result, setResult] = useState(null);
+
+  const spinGacha = () => {
+    const agency = weightedRandom();
+    const group = agency.groups[Math.floor(Math.random() * agency.groups.length)];
+
+    setResult({ agency: agency.name, group });
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-pink-200 via-purple-200 to-blue-200 flex items-center justify-center">
+      <Card className="p-6 rounded-2xl shadow-xl text-center w-[360px]">
+        <CardContent>
+          <h1 className="text-2xl font-bold mb-4">K-POP デビューガチャ🎧</h1>
+          <p className="mb-6 text-sm text-gray-600">あなたの所属と配属グループは…？</p>
+
+          <Button onClick={spinGacha} className="mb-6 w-full">
+            ガチャを回す✨
+          </Button>
+
+          {result && (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="mt-4"
+            >
+              <div className="text-lg">所属：</div>
+              <div className="text-xl font-semibold">{result.agency}</div>
+
+              <div className="mt-3 text-lg">配属グループ：</div>
+              <div className="text-xl font-bold text-pink-500">{result.group}</div>
+
+              <div className="mt-2 text-sm text-gray-500">追加メンバーとして加入✨</div>
+            </motion.div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
